@@ -19,8 +19,6 @@ fs.mounts = [
   { path = "/usr/lib", uri = "file:/usr/lib" },
   { path = "{{ execdir }}", uri = "file:{{ execdir }}" },
   { path = "/etc/passwd", uri = "file:/etc/passwd" },
-  #{ path = "/root/.ssh/", uri = "file:/root/.ssh/" },
-  #{ path = "/root/.ssh/", uri = "file:/root/known_hosts/" },
   { path = "/root/scripts/", uri = "file:/root/scripts/" },
   { type = "encrypted", path = "/root/keys/", uri = "file:/root/enc_keys/", key_name = "_sgx_mrsigner" },
 ]
@@ -36,18 +34,11 @@ sgx.trusted_files = [
   "file:{{ arch_libdir }}/",
   "file:/usr/{{ arch_libdir }}/",
   "file:/etc/passwd",
-  "file:script.sh",
-  #"file:/root/.ssh/",
-  #"file:/root/keys/",
+  "file:main.sh",
   "file:/root/scripts/",
-  #"file:/root/enc_keys/",
-
 ]
 
 
 sgx.allowed_files = [
-  #"file:/root/.ssh/",
-  #"file:/root/scripts/",
   "file:/root/keys/",
-
 ]
