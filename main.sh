@@ -36,6 +36,9 @@ while true; do
 		echo "going to stop vssh"
 		break
 	else
-		ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination "~/scripts/${scripts[$input]}"
+		if [[ "$input" =- ^[0-9]+$ ]] && [ "$input" -lt "${#scripts[@]}" ]; then
+			ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination "${scripts[$input]}"
+		else
+			echo "error: get unexpected input (please enter index from 0 to $(( ${#scripts[@]} - 1 )))"
 	fi
 done
