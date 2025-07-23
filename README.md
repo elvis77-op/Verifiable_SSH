@@ -35,7 +35,9 @@ chmod +x *.sh
 ```
 
 ## Environment clean up
-    run "./clean_vssh.sh"
+```bash
+./clean_vssh.sh"
+```
 
 ## Future Work
 
