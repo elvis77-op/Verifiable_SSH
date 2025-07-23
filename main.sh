@@ -7,6 +7,7 @@ destination="root@$hostname"
 prv_key="/root/keys/id_rsa"
 pub_key="/root/keys/id_rsa.pub"
 k_hosts="/root/keys/known_hosts"
+scripts=(/root/scripts/*.sh)
 
 if [ -f "$prv_key" ]; then
 	echo "private key pair exists"
@@ -26,13 +27,17 @@ else
 	ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination 'chmod +x ~/scripts/*'
 fi
 
+for i in "${!scripts[@]}"; do 
+	echo "$i: ${scripts[$i]}"
+done
+
 while true; do
-	echo "enter the name of the script to execute it in TDVM: [os-release.sh, ps.sh, whoami.sh], or enter q to quit:"
+	echo "enter the index to execute corresponding script in TDVM or enter q to quit:"
 	read input
 	if [[ "$input" == "q" ]]; then
 		echo "going to stop vssh"
 		break
 	else
-		ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination "~/scripts/$input"
+		ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination "~/scripts/${scripts[$input]}"
 	fi
 done
