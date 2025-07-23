@@ -20,8 +20,6 @@ else
 	cat $pub_key
 	read input
 
-	ssh -i $prv_key -o UserKnownHostsFile=$k_hosts $destination 'passwd -l root'
-	echo "password loggin banned"
 	echo "load scripts"
 	scp -P $port -i $prv_key -o UserKnownHostsFile=$k_hosts /root/scripts/* $destination:~/scripts/
 	ssh -p $port -i $prv_key -o UserKnownHostsFile=$k_hosts $destination 'chmod +x ~/scripts/*'
