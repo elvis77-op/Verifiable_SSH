@@ -22,4 +22,3 @@ RUN mkdir -m 700 /root/enc_keys/
 RUN make SGX=1
 
 ENTRYPOINT ["gramine-sgx", "./bash"]
-CMD ["-c", "bash main.sh"]

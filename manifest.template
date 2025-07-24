@@ -11,7 +11,8 @@ loader.log_level = "{{ log_level }}"
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr{{ arch_libdir }}"
 loader.env.PATH = "{{ execdir }}"
 
-loader.insecure__use_cmdline_argv = true 
+loader.insecure__use_cmdline_argv = false
+loader.argv = [ "bash", "main.sh"]
 
 fs.mounts = [
   { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
