@@ -39,7 +39,3 @@ sgx.trusted_files = [
   "file:/root/scripts/",
 ]
 
-
-sgx.allowed_files = [
-  "file:/root/keys/",
-]
