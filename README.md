@@ -12,6 +12,7 @@ This service acts as an agent to execute custom shell command in TD VM, allowing
 
 ## System Flow
 
+```mermaid
 sequenceDiagram
     participant TDVM as TD VM
     box rgb(230,230,230) SGX enclave
@@ -45,7 +46,7 @@ sequenceDiagram
             end
         end
     end
-
+```
 
 ## Prerequisites
 
