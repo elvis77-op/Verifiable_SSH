@@ -15,7 +15,7 @@ This service acts as an agent to execute custom shell command in TD VM, allowing
 ```mermaid
 sequenceDiagram
     participant TDVM as TD VM
-    box transparent SGX enclave
+    box rgb(200,200,200,0.5) SGX enclave
         participant VSSH as VSSH
     end
     actor ADMIN as Administrator
