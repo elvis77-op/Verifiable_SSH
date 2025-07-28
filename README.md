@@ -15,14 +15,14 @@ This service acts as an agent to execute custom shell command in TD VM, allowing
 ```mermaid
 sequenceDiagram
     participant TDVM as TD VM
-    box rgb(230,230,230) SGX enclave
+    box transparent SGX enclave
         participant VSSH as VSSH
     end
     actor ADMIN as Administrator
     actor VF as Third-party Verifiers
 
     alt initialization
-    rect rgb(200,230,230,0.5)
+    rect rgb(230,230,230,0.5)
         ADMIN->>+VSSH: Setup
         Note over VSSH: Generate SGX quote
         VSSH->>VF: Send SGX quote
