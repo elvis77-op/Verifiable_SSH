@@ -8,43 +8,43 @@ This service acts as an agent to execute custom shell command in TD VM, allowing
 ### Key Features
 
 ## Architechture
-(architecture.png)
+![Architecture.png](https://private-user-images.githubusercontent.com/172696748/471506355-2dd5cea8-cdcd-421d-924d-2d673df686f9.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTM3MDY5ODksIm5iZiI6MTc1MzcwNjY4OSwicGF0aCI6Ii8xNzI2OTY3NDgvNDcxNTA2MzU1LTJkZDVjZWE4LWNkY2QtNDIxZC05MjRkLTJkNjczZGY2ODZmOS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzI4JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcyOFQxMjQ0NDlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05ODc2OGRhNDFmNTc0ODAwYzVhMGIwYWY3Mzc5NGY0Y2IwZmQ5MWFiODg3Mjk4Yzc4NWY0YjRhNDYyNzA0ZTA0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.TVoa-up5J_OBhZIODot-G-3P6bwN7_N3RjLaGm_HgBE)
 
 ## System Flow
 
 sequenceDiagram
-      participant TDVM as TD VM
-      box rgb(230,230,230) SGX enclave
-            participant VSSH as VSSH
-      end
-      actor ADMIN as Administrator
-      actor VF as Third-party Verifiers
+    participant TDVM as TD VM
+    box rgb(230,230,230) SGX enclave
+        participant VSSH as VSSH
+    end
+    actor ADMIN as Administrator
+    actor VF as Third-party Verifiers
 
-      alt initialization
-      rect rgb(200,230,230,0.5)
-            ADMIN->>+VSSH: Setup
-            Note over VSSH: Generate SGX quote
-            VSSH->>VF: Send SGX quote
-            Note over VSSH: Generate ssh keypair
-            VSSH->>ADMIN: Send public key
-            Note over ADMIN: Include public key and disable password login in VM image
-            ADMIN->>VF: Send hashed VM image
-            ADMIN->>+TDVM: Setup
-            Note over TDVM: Generate TD quote
-            TDVM->>VF: Send TD quote
-            Note over VSSH: Load customed scripts 
-            VSSH->>TDVM: Transfer customed scripts
-      end
+    alt initialization
+    rect rgb(200,230,230,0.5)
+        ADMIN->>+VSSH: Setup
+        Note over VSSH: Generate SGX quote
+        VSSH->>VF: Send SGX quote
+        Note over VSSH: Generate ssh keypair
+        VSSH->>ADMIN: Send public key
+        Note over ADMIN: Include public key and disable password login in VM image
+        ADMIN->>VF: Send hashed VM image
+        ADMIN->>+TDVM: Setup
+        Note over TDVM: Generate TD quote
+        TDVM->>VF: Send TD quote
+        Note over VSSH: Load customed scripts 
+        VSSH->>TDVM: Transfer customed scripts
+    end
 
-      else connection established
-            loop 
-                  VSSH->>TDVM: Trigger preinstalled program
-                  Note over TDVM: Execute corresponding program
-                  alt Capture STOP Sign
-                  Note over VSSH: Terminate process
-                  end
+    else connection established
+        loop 
+            VSSH->>TDVM: Trigger preinstalled program
+            Note over TDVM: Execute corresponding program
+            alt Capture STOP Sign
+            Note over VSSH: Terminate process
             end
-      end
+        end
+    end
 
 
 ## Prerequisites
