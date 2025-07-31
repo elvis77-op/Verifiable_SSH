@@ -3,7 +3,8 @@ a SSH-based service that provides the only access to TD(Trust Domain) VM using a
 
 ## Overview
 
-This service acts as an agent to execute custom shell command in TD VM, allowing multi-party to verify it based on its measurements. For the security consideration, another agent that get the access to measurements of the initializaion of TD VM is also needed.
+VSSH consists of three components: 
+
 
 ### Key Features
 
@@ -14,38 +15,51 @@ This service acts as an agent to execute custom shell command in TD VM, allowing
 
 ```mermaid
 sequenceDiagram
-    participant TDVM as TD VM
     box rgb(200,200,200,0.5) SGX enclave
-        participant VSSH as VSSH
+        participant VSSH as VSSH client
     end
-    actor ADMIN as Administrator
+    actor ADMIN as Operator
     actor VF as Third-party Verifiers
 
-    alt initialization
     rect rgb(230,230,230,0.5)
-        ADMIN->>+VSSH: Setup
+        ADMIN->>+VSSH: Setup VSSH client
         Note over VSSH: Generate SGX quote
         VSSH->>VF: Send SGX quote
+        Note over VF: Verify SGX quote
+        VF->>VSSH: VSSH client verified
         Note over VSSH: Generate ssh keypair
-        VSSH->>ADMIN: Send public key
-        Note over ADMIN: Include public key and disable password login in VM image
-        ADMIN->>VF: Send hashed VM image
-        ADMIN->>+TDVM: Setup
-        Note over TDVM: Generate TD quote
-        TDVM->>VF: Send TD quote
-        Note over VSSH: Load customed scripts 
-        VSSH->>TDVM: Transfer customed scripts
-    end
+        Note over VSSH: Keep private key in SGX enclave
+        VSSH->>VF: Send public key
+        Note over VF: 1. Prepare a template TD VM
+        Note over VF: 2. Include the public key (in TDVM)
+        Note over VF: 3. Disable password login for SSH (in TDVM)
+        Note over VF: 4. keep hashed TDVM image as reference
+        VF->>ADMIN: Send TDVM image 
+        create participant BOOT as TDVM Booter
+        ADMIN->>BOOT: Setup TDVM Booter
+        Note over ADMIN,BOOT: pass the TDVM image
+        create participant TDVM as VSSH server<br/>(in TDVM)
+        Note over BOOT: Generate TD quote
+        BOOT->>VF: Send TD quote
+        destroy BOOT
+        Note over VF: Verify TD quote 
+        VF->>VF: check whether hashed TDVM image matched
+        VF->>VSSH: VSSH server verified
+        Note over VSSH: Load preinstalled programs
+        VSSH->>TDVM: Transfer preinstalled programs
+        Note over VSSH,TDVM: via SSH
+        TDVM-->>VSSH: VSSH connection established
+    end 
 
-    else connection established
-        loop 
-            VSSH->>TDVM: Trigger preinstalled program
-            Note over TDVM: Execute corresponding program
-            alt Capture STOP Sign
-            Note over VSSH: Terminate process
-            end
+    
+    loop 
+        VSSH->>TDVM: Trigger preinstalled program
+        Note over TDVM: Execute corresponding program
+        alt Capture STOP Sign
+        Note over VSSH: Terminate process
         end
     end
+    
 ```
 
 ## Prerequisites
@@ -78,7 +92,7 @@ chmod +x *.sh
 
 ## Environment clean up
 ```bash
-./clean_vssh.sh"
+./clean_vssh.sh
 ```
 
 ## Future Work
