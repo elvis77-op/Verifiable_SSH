@@ -14,21 +14,6 @@ VSSH consists of three components:
 ## System Flow
 
 ```mermaid
-    sequenceDiagram
-    Alice->>Bob: Hello Bob, how are you ?
-    Bob->>Alice: Fine, thank you. And you?
-    create participant Carl
-    Alice->>Carl: Hi Carl!
-    create actor D as Donald
-    Carl->>D: Hi!
-    destroy Carl
-    Alice-xCarl: We are too many
-    destroy Bob
-    Bob->>Alice: I agree
-
-```
-
-```mermaid
 sequenceDiagram
     box rgb(200,200,200,0.5) SGX enclave
         participant VSSH as VSSH client
