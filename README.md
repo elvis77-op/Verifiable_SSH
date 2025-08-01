@@ -14,6 +14,10 @@ VSSH consists of three components:
 ## System Flow
 
 ```mermaid
+    info
+```
+
+```mermaid
 sequenceDiagram
     box rgb(200,200,200,0.5) SGX enclave
         participant VSSH as VSSH client
