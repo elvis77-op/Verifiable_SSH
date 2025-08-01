@@ -44,6 +44,7 @@ sequenceDiagram
         BOOT->>VF: Send TD quote
         Note over VF: Verify TD quote 
         VF->>VF: check whether hashed TDVM image matched
+        destroy VF
         VF->>VSSH: VSSH server verified
         Note over VSSH: Load customized programs
         VSSH->>TDVM: Transfer customized programs
