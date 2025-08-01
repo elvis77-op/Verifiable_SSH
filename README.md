@@ -40,8 +40,8 @@ sequenceDiagram
         Note over ADMIN,BOOT: pass the TDVM image
         participant TDVM as VSSH server (in TDVM)
         Note over BOOT: Generate TD quote
-        BOOT->>VF: Send TD quote
         destroy BOOT
+        BOOT->>VF: Send TD quote
         Note over VF: Verify TD quote 
         VF->>VF: check whether hashed TDVM image matched
         VF->>VSSH: VSSH server verified
