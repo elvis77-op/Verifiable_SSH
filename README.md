@@ -15,13 +15,14 @@ VSSH consists of three components:
 
 ```mermaid
 sequenceDiagram
-    box rgb(200,200,200,0.5) SGX enclave
-        participant VSSH as VSSH client
-    end
-    create actor ADMIN as Operator
-    create actor VF as Third-party Verifiers
+    
+    actor ADMIN as Operator
+    actor VF as Third-party Verifiers
 
     rect rgb(230,230,230,0.5)
+        box rgb(200,200,200,0.5) SGX enclave
+            create participant VSSH as VSSH client
+        end
         ADMIN->>+VSSH: Setup VSSH client
         Note over VSSH: Generate SGX quote
         VSSH->>VF: Send SGX quote
@@ -44,7 +45,6 @@ sequenceDiagram
         BOOT->>VF: Send TD quote
         Note over VF: Verify TD quote 
         VF->>VF: check whether hashed TDVM image matched
-        destroy VF
         VF->>VSSH: VSSH server verified
         Note over VSSH: Load customized programs
         VSSH->>TDVM: Transfer customized programs
