@@ -18,8 +18,8 @@ sequenceDiagram
     box rgb(200,200,200,0.5) SGX enclave
         participant VSSH as VSSH client
     end
-    actor ADMIN as Operator
-    actor VF as Third-party Verifiers
+    create actor ADMIN as Operator
+    create actor VF as Third-party Verifiers
 
     rect rgb(230,230,230,0.5)
         ADMIN->>+VSSH: Setup VSSH client
@@ -36,28 +36,34 @@ sequenceDiagram
         Note over VF: 4. keep hashed TDVM image as reference
         VF->>ADMIN: Send TDVM image 
         create participant BOOT as TDVM Booter
-        ADMIN->>BOOT: Setup TDVM Booter
-        Note over ADMIN,BOOT: pass the TDVM image
-        participant TDVM as VSSH server (in TDVM)
+        ADMIN->>BOOT: Setup TDVM Booter based on recieved TDVM image
+        create participant TDVM as VSSH server (in TDVM)
+        BOOT->>TDVM: Boot TDVM
         Note over BOOT: Generate TD quote
         destroy BOOT
         BOOT->>VF: Send TD quote
         Note over VF: Verify TD quote 
         VF->>VF: check whether hashed TDVM image matched
+        destroy VF
         VF->>VSSH: VSSH server verified
-        Note over VSSH: Load preinstalled programs
-        VSSH->>TDVM: Transfer preinstalled programs
-        Note over VSSH,TDVM: via SSH
+        Note over VSSH: Load customized programs
+        VSSH->>TDVM: Transfer customized programs
         TDVM-->>VSSH: VSSH connection established
     end 
 
     
     loop 
-        VSSH->>TDVM: Trigger preinstalled program
-        Note over TDVM: Execute corresponding program
+        destroy ADMIN
+        ADMIN->>VSSH: Select an index
         alt Capture STOP Sign
         Note over VSSH: Terminate process
+        else
+        Note over VSSH: Index certain program
         end
+        VSSH->>TDVM: Request executing
+        Note over TDVM: Execute corresponding program
+        TDVM->>VSSH: Return execution ouput
+
     end
     
 ```
