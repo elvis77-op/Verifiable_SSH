@@ -35,10 +35,10 @@ sequenceDiagram
         Note over VF: 3. Disable password login for SSH (in TDVM)
         Note over VF: 4. keep hashed TDVM image as reference
         VF->>ADMIN: Send TDVM image 
-        participant BOOT as TDVM Booter
+        create participant BOOT as TDVM Booter
         ADMIN->>BOOT: Setup TDVM Booter
         Note over ADMIN,BOOT: pass the TDVM image
-        create participant TDVM as VSSH server (in TDVM)
+        participant TDVM as VSSH server (in TDVM)
         Note over BOOT: Generate TD quote
         BOOT->>VF: Send TD quote
         destroy BOOT
