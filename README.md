@@ -44,7 +44,7 @@ sequenceDiagram
         create participant TDVM as VSSH server (in TDVM)
         BOOT->>TDVM: Boot TDVM
         destroy BOOT
-        Note over Boot: Finish booting
+        Note over BOOT: Finish booting
         ADMIN->>VSSH: TDVM created
         Note over VSSH: Load customized programs
         VSSH->>TDVM: Transfer customized programs
