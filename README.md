@@ -9,8 +9,7 @@ VSSH consists of three components:
 ### Key Features
 
 ## Architechture
-![Architecture.png](https://private-user-images.githubusercontent.com/172696748/471506355-2dd5cea8-cdcd-421d-924d-2d673df686f9.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTM3MDY5ODksIm5iZiI6MTc1MzcwNjY4OSwicGF0aCI6Ii8xNzI2OTY3NDgvNDcxNTA2MzU1LTJkZDVjZWE4LWNkY2QtNDIxZC05MjRkLTJkNjczZGY2ODZmOS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNzI4JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDcyOFQxMjQ0NDlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT05ODc2OGRhNDFmNTc0ODAwYzVhMGIwYWY3Mzc5NGY0Y2IwZmQ5MWFiODg3Mjk4Yzc4NWY0YjRhNDYyNzA0ZTA0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.TVoa-up5J_OBhZIODot-G-3P6bwN7_N3RjLaGm_HgBE)
-
+![Architecture.png](images/architecture.png)
 ## System Flow
 
 ```mermaid
@@ -22,7 +21,7 @@ sequenceDiagram
     actor VF as Third-party Verifiers
 
     rect rgb(230,230,230,0.5)
-        ADMIN->>+VSSH: Setup VSSH client
+        ADMIN->>+VSSH: Launch VSSH client
         Note over VSSH: Generate SGX quote
         VSSH->>VF: Send SGX quote
         Note over VF: Verify SGX quote
@@ -34,18 +33,18 @@ sequenceDiagram
         Note over VF: 2. Include the public key (in TDVM)
         Note over VF: 3. Disable password login for SSH (in TDVM)
         Note over VF: 4. keep hashed TDVM image as reference
-        VF->>ADMIN: Send TDVM image 
-        create participant BOOT as TDVM Booter
-        ADMIN->>BOOT: Setup TDVM Booter based on recieved TDVM image
-        create participant TDVM as VSSH server (in TDVM)
-        BOOT->>TDVM: Boot TDVM
+        create participant BOOT as initrd
+        ADMIN->>BOOT: Launch initrd
         Note over BOOT: Generate TD quote
-        destroy BOOT
         BOOT->>VF: Send TD quote
         Note over VF: Verify TD quote 
-        VF->>VF: check whether hashed TDVM image matched
         destroy VF
-        VF->>VSSH: VSSH server verified
+        VF->>BOOT: Send hashed TDVM image
+        Note over BOOT: Check whether guest image is matched
+        create participant TDVM as VSSH server (in TDVM)
+        BOOT->>TDVM: Boot TDVM
+        destroy BOOT
+        ADMIN->>VSSH: TDVM created
         Note over VSSH: Load customized programs
         VSSH->>TDVM: Transfer customized programs
         TDVM-->>VSSH: VSSH connection established
