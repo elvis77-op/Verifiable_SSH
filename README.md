@@ -42,8 +42,9 @@ sequenceDiagram
         VF->>BOOT: Send hashed TDVM image
         Note over BOOT: Check whether guest image is matched
         create participant TDVM as VSSH server (in TDVM)
-        destroy BOOT
         BOOT->>TDVM: Boot TDVM
+        destroy BOOT
+        BOOT->>BOOT: Finish booting
         ADMIN->>VSSH: TDVM created
         Note over VSSH: Load customized programs
         VSSH->>TDVM: Transfer customized programs
