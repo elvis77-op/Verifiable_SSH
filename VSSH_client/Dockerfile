@@ -3,9 +3,6 @@ FROM gramineproject/gramine:latest
 # edit your proxy settings
 # ENV http_proxy=
 # ENV https_proxy=
-ENV http_proxy=http://child-prc.intel.com:913
-ENV https_proxy=http://child-prc.intel.com:913
-ENV no_proxy=localhost,10.239.45.47,127.0.0.1,10.239.45.1,.example.com
 # edit here if you have local IP addresses that do not need proxy
 # ENV no_proxy=
 

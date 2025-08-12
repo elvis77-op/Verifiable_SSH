@@ -1,8 +1,10 @@
 FROM ubuntu:24.04
 
-ENV http_proxy=http://child-prc.intel.com:913
-ENV https_proxy=http://child-prc.intel.com:913
-ENV no_proxy=10.0.2.15,127.0.0.1,localhost,10.244.0.0/16,10.0.2.2,10.239.45.1,10.239.82.94
+# edit your proxy settings
+# ENV http_proxy=
+# ENV https_proxy=
+# edit here if you have local IP addresses that do not need proxy
+# ENV no_proxy=
 
 RUN apt update && apt install -y wget curl ssh libssl-dev python3 python3-pip && python3 -m pip install grpcio grpcio-tools cryptography --break-system-packages
 RUN echo 'deb [signed-by=/etc/apt/keyrings/intel-sgx-keyring.asc arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu noble main' | tee /etc/apt/sources.list.d/intel-sgx.list

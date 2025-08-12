@@ -5,14 +5,11 @@
 
 loader.entrypoint = "file:{{ gramine.libos }}"
 libos.entrypoint = "{{ entrypoint }}"
-# loader.log_level = "debug"
 loader.log_level = "{{ log_level }}"
 
 loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr{{ arch_libdir }}"
 loader.insecure__use_cmdline_argv = false
 loader.argv = ["python3", "AS_client.py"]
-#loader.argv = ["python3", "import os"]
-#loader.argv = ["python3", "os.execpl("ssh-keyscan","-p","10086", "10.239.45.47")"]
 
 sys.enable_sigterm_injection = true
 
