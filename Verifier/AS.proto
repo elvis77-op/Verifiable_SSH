@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package AS;
+
+message AttestationRequest {
+    string greeting = 1;
+}
+
+message AttestationResponse {
+    int32 status = 1;
+    string signature = 2;
+    string nonce = 3;
+}
+
+message SendQuote {
+    string quote = 1;
+    string publicsshkey =2;
+}
+
+message VerificationResponse {
+    int32 status = 1;
+    string signature = 2;
+    string result = 3;
+}
+
+service AttestationService {
+    rpc Handshake( AttestationRequest) returns ( AttestationResponse);
+    rpc Quoteverification( SendQuote) returns ( VerificationResponse);
+}
+

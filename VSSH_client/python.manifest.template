@@ -1,0 +1,77 @@
+# Copyright (C) 2023 Gramine contributors
+# SPDX-License-Identifier: BSD-3-Clause
+
+# Hello World manifest file example
+
+loader.entrypoint = "file:{{ gramine.libos }}"
+libos.entrypoint = "{{ entrypoint }}"
+# loader.log_level = "debug"
+loader.log_level = "{{ log_level }}"
+
+loader.env.LD_LIBRARY_PATH = "/lib:{{ arch_libdir }}:/usr{{ arch_libdir }}"
+loader.insecure__use_cmdline_argv = false
+loader.argv = ["python3", "AS_client.py"]
+#loader.argv = ["python3", "import os"]
+#loader.argv = ["python3", "os.execpl("ssh-keyscan","-p","10086", "10.239.45.47")"]
+
+sys.enable_sigterm_injection = true
+
+fs.mounts = [
+  { path = "/lib", uri = "file:{{ gramine.runtimedir() }}" },
+  { path = "{{ arch_libdir }}", uri = "file:{{ arch_libdir }}" },
+  { path = "/usr{{ arch_libdir }}", uri = "file:/usr{{ arch_libdir }}" },
+  { path = "/etc", uri = "file:/etc" },
+#  { path = "/usr/share/sgx/tee_appraisal_policy.wasm", uri = "file:/usr/share/sgx/tee_appraisal_policy.wasm" },
+
+{% for path in python.get_sys_path(entrypoint) %}
+  { path = "{{ path }}", uri = "file:{{ path }}" },
+{% endfor %}
+  { path = "{{ entrypoint }}", uri = "file:{{ entrypoint }}" },
+  { type = "encrypted", path = "/output.txt", uri = "file:output.dat", key_name = "_sgx_mrsigner" },
+  { type = "encrypted", path = "/root/keys/", uri = "file:/root/enc_keys/", key_name = "_sgx_mrsigner" },
+  { path = "/usr/bin", uri = "file:/usr/bin"},
+  { path = "/etc/passwd", uri = "file:/etc/passwd"},
+  { path = "/root/scripts", uri = "file:/root/scripts"},
+]
+
+sgx.debug = false
+sgx.edmm_enable = {{ 'true' if env.get('EDMM', '0') == '1' else 'false' }}
+
+sgx.enclave_size = "1G"
+sgx.max_threads = 32
+
+sgx.remote_attestation = "{{ ra_type }}"
+sgx.ra_client_spid = "{{ ra_client_spid }}"
+sgx.ra_client_linkable = {{ 'true' if ra_client_linkable == '1' else 'false' }}
+
+sgx.trusted_files = [
+  "file:{{ gramine.libos }}",
+  "file:{{ gramine.runtimedir() }}/",
+  "file:{{ arch_libdir }}/",
+  "file:/usr{{ arch_libdir }}/",
+  "file:/usr/share/sgx/tee_appraisal_policy.wasm",
+  "file:/etc/sgx_default_qcnl.conf",
+  "file:/usr/bin/make",
+  "file:/usr/bin/ssh-keyscan",
+  "file:/usr/bin/ssh-keygen",
+  "file:/usr/bin/sh",
+  "file:/usr/bin/scp",
+  "file:/usr/bin/ssh",
+  "file:/etc/passwd",
+  #"file:/usr/bin/tee_appraisal_tool",
+  "file:{{ entrypoint }}",
+{% for path in python.get_sys_path(entrypoint) %}
+  "file:{{ path }}{{ '/' if path.is_dir() else '' }}",
+{% endfor %}
+  "file:/root/scripts/",
+  "file:public_key.pem",
+  "file:config.py",
+  "file:AS_client.py",
+  "file:AS_pb2_grpc.py",
+  "file:AS_pb2.py",
+]
+
+sgx.allowed_files = [
+  "file:signature_view.txt"
+]
+
