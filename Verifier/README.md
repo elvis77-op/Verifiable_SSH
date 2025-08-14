@@ -23,7 +23,7 @@ python policy_update.py
 
 5. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
 
-6. Be causious that when you modify the signing key paths, you may need to sy
+6. Be causious that when you modify the signing key paths, you may need to sync these changes in config.py
 
 ## Usage
 - ```bash bash build_verifier.sh ``` to build docker image

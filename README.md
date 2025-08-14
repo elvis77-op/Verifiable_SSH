@@ -95,7 +95,8 @@ cd Verifiable_SSH
 ```bash
 python key_generate.py
 ```
-alternative methods that generate RSA key pairs (private key in PKCS#1 format and public key in X.509 certificate) are also accepted, where you need to store the keys in PEM format files and [define their relative paths]()
+alternative methods that generate RSA key pairs (private key in PKCS#1 format and public key in X.509 certificate) are also accepted, where you need to store the keys in PEM format files
+Be causious that when you modify the signing key paths, you may need to sync these changes in either config.py
 
 1. Refer to [VSSH client deployment](VSSH_client/README.md#deployment)
 
