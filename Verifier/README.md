@@ -20,6 +20,7 @@ python policy_update.py
 ```
 
 4. Define the pccs server address in sgx_default_qcnl.conf and modify other config (except "use_secure_cert" = "false" ) based on local environment 
+To install a local pccs service, refer to [PCCS installtion](https://github.com/intel/SGXDataCenterAttestationPrimitives/tree/main/QuoteGeneration/pccs)
 
 5. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
 
