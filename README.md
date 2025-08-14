@@ -97,9 +97,9 @@ cd Verifiable_SSH
 python key_generate.py
 ```
 
-3. Refer to <./VSSH_client/README.md>
+3. Refer to <VSSH_client/README.md>
 
-4. Refer to <./Verifier/README.md>
+4. Refer to <Verifier/README.md>
 
 ## Usage
 
