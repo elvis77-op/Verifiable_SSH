@@ -83,8 +83,7 @@ sequenceDiagram
 - Linux environment (this project has worked successfully with Ubuntu 22.04 LTS)
 
 ## Deployment 
-Note: Please operate step 1- in a fully trusted environment
-
+Note: Please operate step 1 and 2 in a fully trusted environment
 
 1. Clone the repository:
 ```bash
@@ -92,14 +91,15 @@ git clone https://github.com/elvis77-op/Verifiable_SSH.git
 cd Verifiable_SSH
 ```
 
-2. Generate Signing key pair for Verifier(need a python compilor):
+1. Generate signing key pair for Verifier:
 ```bash
 python key_generate.py
 ```
+alternative methods that generate RSA key pairs (private key in PKCS#1 format and public key in X.509 certificate) are also accepted, where you need to store the keys in PEM format files and [define their relative paths]()
 
-3. Refer to []<VSSH_client/README.md>
+1. Refer to [VSSH client deployment](VSSH_client/README.md#deployment)
 
-4. Refer to <Verifier/README.md>
+2. Refer to [Verifier deployment](Verifier/README.md#deployment)
 
 ## Usage
 

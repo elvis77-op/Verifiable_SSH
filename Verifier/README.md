@@ -4,7 +4,8 @@
 - linux os (successfully tested with Ubuntu 24.04)
 
 ## Deployment
-Note: Please make sure that you have completed the server-side key generation and the setup of VSSH client (refer to ../README.md) before Verifier deployment
+Note: Note: Please make sure that you have completed [server-side key generation](../README.md#Deployment) and [setup of VSSH client](../VSSH_client/README.md#Deployment) before Verifier deployment
+
 1. Run the following command and assign "mrenclave" and "mrsigner" values (printed in console) to corresponding variables of config.py
 ```bash
 bash ../VSSH_client/clean_vssh.sh
@@ -21,6 +22,8 @@ python policy_update.py
 4. Define the pccs server address in sgx_default_qcnl.conf and modify other config (except "use_secure_cert" = "false" ) based on local environment 
 
 5. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
+
+6. Be causious that when you modify the signing key paths, you may need to sy
 
 ## Usage
 - ```bash bash build_verifier.sh ``` to build docker image
