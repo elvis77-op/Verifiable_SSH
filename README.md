@@ -82,7 +82,9 @@ sequenceDiagram
 - DCAP driver and related software stack
 - Linux environment (this project has worked successfully with Ubuntu 22.04 LTS)
 
-## Deployment
+## Deployment 
+Note: Please operate step 1- in a fully trusted environment
+
 
 1. Clone the repository:
 ```bash
@@ -90,19 +92,17 @@ git clone https://github.com/elvis77-op/Verifiable_SSH.git
 cd Verifiable_SSH
 ```
 
-2. Add proxy in Dockerfile (optional)
-
-3. Define the address and port of TDVM in main.sh
-
-4. Build the project:
+2. Generate Signing key pair for Verifier(need a python compilor):
 ```bash
-chmod +x *.sh
-./build_vssh.sh
+python key_generate.py
 ```
-5. Run the project:
-```bash
-./launch_vssh.sh
-```
+
+3. Refer to <./VSSH_client/README.md>
+
+4. Refer to <./Verifier/README.md>
+
+## Usage
+
 
 ## Environment clean up
 ```bash

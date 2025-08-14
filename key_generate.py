@@ -1,8 +1,8 @@
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-signing_pub = "public_key.pem"
-signing_pri = "private_key.pem"
+signing_pub = "./VSSH_client/public_key.pem"
+signing_pri = "./Verifier/private_key.pem"
 
 
 def generate_signing_keys(public_path, private_path):
