@@ -97,7 +97,7 @@ cd Verifiable_SSH
 python key_generate.py
 ```
 
-3. Refer to <VSSH_client/README.md>
+3. Refer to []<VSSH_client/README.md>
 
 4. Refer to <Verifier/README.md>
 
@@ -110,7 +110,7 @@ python key_generate.py
 ```
 ## Current Phase
 - [x] Basic connection of VSSH client and VSSH server
-- [ ] Quote Verification for VSSH client
+- [x] Quote Verification for VSSH client
 - [ ] Quote Verification for early boot of TD VM
   
 ## Future Work
@@ -124,7 +124,7 @@ python key_generate.py
 - [ ] Add configuration for custom ssh command
   
 ### Architectural Improvements
-- [ ] Create a configuration system for deployment flexibility
+- [x] Create a configuration system for deployment flexibility
 
 ## Design Considerations for Future Versions
 

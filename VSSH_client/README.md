@@ -15,5 +15,5 @@ VSSH_client consists of two components: Attestation client and SSH client. When 
 - Linux environment (this project has worked successfully with Ubuntu 22.04 LTS)
 
 ## Deployment
-Note: Note: Please make sure that you have completed the server-side key generation and the setup of VSSH client (refer to ../README.md) before Verifier deployment
+Note: Note: Please make sure that you have completed [server-side key generation](../README.md#Deployment) and [setup of VSSH client](../VSSH_client/README.md#Deployment) before Verifier deployment
 - 
