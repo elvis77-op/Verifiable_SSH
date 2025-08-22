@@ -28,5 +28,6 @@ def generate_signing_keys(public_path, private_path):
         f.write(pem_public)
 
 generate_signing_keys(signing_pub, signing_pri)
+print(f"public signing key is stored in {signing_pub}\nprivate signing key is stored in {signing_pri}")
 
 

@@ -53,8 +53,6 @@ endif
 .PHONY: clean
 clean:
 	$(RM) *.manifest *.manifest.sgx *.token *.sig OUTPUT* *.PID TEST_STDOUT TEST_STDERR
-#	$(RM) -r relying_party_enclave/__pycache__
-	# @cd relying_party_enclave/RATLS_Conn && make clean
 
 .PHONY: distclean
 distclean: clean
