@@ -96,6 +96,7 @@ sequenceDiagram
         TDVM->>VSSH: Return execution ouput
 
     end
+```
 
 ### Verification service of VSSH client
 ```mermaid
@@ -114,7 +115,7 @@ sequenceDiagram
     Note over VF: Run customized consensus to verify the quote (includes checking the nonce)
     Note over VF: Self-sign the status code for verification result
     VF->>VSSH: Send the signature
-
+```
 
 ## Prerequisites
 
