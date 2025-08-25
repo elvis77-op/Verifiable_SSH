@@ -17,8 +17,9 @@ VSSH client running in a container protected by SGX enclave, acting as a standar
 
 ## Architechture
 ![Architecture.png](images/architecture.png)
-## System Flow
 
+## System Flow
+### Overall
 ```mermaid
 sequenceDiagram
     box rgb(200,200,200,0.5) SGX enclave
@@ -75,6 +76,45 @@ sequenceDiagram
     end
     
 ```
+### VSSH connection
+```mermaid
+sequenceDiagram
+    participant ADMIN as operator
+    box rgb(200,200,200,0.5) SGX enclave
+        participant VSSH as VSSH client
+    end
+    participant TDVM as VSSH server
+    loop 
+        ADMIN->>VSSH: Select an index
+        alt Capture STOP Sign
+        Note over VSSH: Terminate process
+        else
+        Note over VSSH: Index certain program
+        end
+        VSSH->>TDVM: Request executing
+        Note over TDVM: Execute corresponding program
+        TDVM->>VSSH: Return execution ouput
+
+    end
+
+### Verification service of VSSH client
+```mermaid
+sequenceDiagram 
+    box rgb(200,200,200,0.5) SGX enclave
+        participant VSSH as Attestation client
+    end
+    participant VF as Verifier (Attestation server)
+    VSSH->>VF: Able to be attested
+    Note over VF: Generate nonce for challenging
+    Note over VF: Self-sign the nonce
+    VF->>VSSH: Send the signature
+    Note over VSSH: Verify the signature
+    Note over VSSH: Generate report data and then SGX quote
+    VSSH->>VF: Send quote
+    Note over VF: Run customized consensus to verify the quote (includes checking the nonce)
+    Note over VF: Self-sign the status code for verification result
+    VF->>VSSH: Send the signature
+
 
 ## Prerequisites
 
@@ -87,13 +127,13 @@ sequenceDiagram
 
 2. Clone the repository to the trusted host:
 ```bash
-git clone https://github.com/elvis77-op/Verifiable_SSH.git
-cd Verifiable_SSH
+$ git clone https://github.com/elvis77-op/Verifiable_SSH.git
+$ cd Verifiable_SSH
 ```
 
 3. Generate signing key pair for Verifier(need python environment and related packages):
 ```bash
-python key_generate.py
+$ python key_generate.py
 ```
 alternative methods that generate RSA key pairs (private key in PKCS#1 format and public key in X.509 certificate) are also accepted, where you need to store the keys in PEM format files
 Be causious that when you modify the signing key paths, you may need to sync these changes in either config.py
@@ -103,31 +143,27 @@ Be causious that when you modify the signing key paths, you may need to sync the
     2. Edit config.py
     3. Prepare customized scripts in ./scripts folder according to templates (ps, os-release, whoami)in it
     4. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
-    5. ```bash chmod +x *.sh```
-    6. ```bash ./build_vssh.sh ```
+    5. ```$ chmod +x *.sh```
+    6. ```$ ./build_vssh.sh ```
 
 5. Build Verifier image
-    1. ```bash cd ../Verifier ```
+    1. ```$ cd ../Verifier ```
     2. Edit config.py (the value of mrenclave and mrsigner are printed in the console while building VSSH client image)
-    3. ```bash python policy_update.py```
+    3. ```$ python policy_update.py```
     4. Define the pccs server address in sgx_default_qcnl.conf and modify other config (except "use_secure_cert" = "false" ) based on local     environment 
     To install a local pccs service, refer to [PCCS installtion](https://github.com/intel/SGXDataCenterAttestationPrimitives/tree/main/QuoteGeneration/pccs)
     5. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
-    6. ```bash chmod +x *.sh```
-    7. ```bash ./build_verifier.sh```
+    6. ```$ chmod +x *.sh```
+    7. ```$ ./build_verifier.sh```
 
 ## Usage
 tips: Every changes to the code of VSSH_client will result in different mrenclave value, in which you need to rebuild Verifier image with the latest mrenclave value
 1. Move to "Verifier" directory (where you build verifier image)
-    ```bash ./launch_verifier.sh ```
+    - run ```$ ./launch_verifier.sh ```
 2. Move to "VSSH_client" directory (where you build vssh client image )
-    ```bash ./launch_vssh.sh ```
-    - when you need to clean the ssh key pairs , run  ```bash ./clean_vssh.sh ```
+    - run ```$ ./launch_vssh.sh ```
+    - when you need to clean the ssh key pairs , run  ```$ ./clean_vssh.sh ```
 
-## Environment clean up
-```bash
-./clean_vssh.sh
-```
 ## Current Phase
 - [x] Basic connection of VSSH client and VSSH server
 - [x] Quote Verification for VSSH client
