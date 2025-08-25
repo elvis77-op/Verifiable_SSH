@@ -4,7 +4,7 @@ a SSH-based service that provides the only access to TD (Trust Domain) VM using 
 ## Overview
 
 VSSH consists of three components: VSSH client, VSSH server and Attestation service.
-VSSH client running in a container protected by SGX enclave, acting as a standard SSH client that only recieves index to call corresponding command in SSH server. VSSH server is a standard SSH server in TD VM, but can only be accessed by VSSH client with its own SSH private key. Attestation Service/Verifiers running in each of the multi-party verification participants. Based on the verification results, participants can run a customized consensus to determine whether VSSH client and server are protected by SGX and TDVM, therefore trustworthy.
+VSSH client running in a container protected by SGX enclave, acting as a standard SSH client that only receives index to call corresponding command in SSH server. VSSH server is a standard SSH server in TD VM, but can only be accessed by VSSH client with its own SSH private key. Attestation Service/Verifiers running in each of the multi-party verification participants. Based on the verification results, participants can run a customized consensus to determine whether VSSH client and server are protected by SGX and TDVM, therefore trustworthy.
 
 
 ### Key Features
@@ -124,9 +124,11 @@ sequenceDiagram
 - Linux environment (this project has worked successfully with Ubuntu 22.04 LTS)
 
 ## Preamble
-1. You need two hosts to operate with, one must meet the [prerequisites](#prerequisites) ,and the other one must be fully trusted
+1. You need two hosts to operate with:
+    Host A: meets the [prerequisites](#prerequisites)
+    Host B: fully trusted
 
-2. Clone the repository to the trusted host:
+2. Clone the repository to Host B:
 ```bash
 $ git clone https://github.com/elvis77-op/Verifiable_SSH.git
 $ cd Verifiable_SSH
@@ -140,7 +142,7 @@ alternative methods that generate RSA key pairs (private key in PKCS#1 format an
 Be causious that when you modify the signing key paths, you may need to sync these changes in either config.py
 
 4. Build VSSH client image
-    1. Move the whole directory "VSSH_client" to the remote host that satisfy the [prerequisites](#prerequisites)
+    1. Move the whole directory "VSSH_client" to Host A that satisfy the [prerequisites](#prerequisites)
     2. Edit config.py
     3. Prepare customized scripts in ./scripts folder according to templates (ps, os-release, whoami)in it
     4. Define proxy and no_proxy in Dockerfile to help build the docker image (optional)
@@ -158,7 +160,7 @@ Be causious that when you modify the signing key paths, you may need to sync the
     7. ```$ ./build_verifier.sh```
 
 ## Usage
-tips: Every changes to the code of VSSH_client will result in different mrenclave value, in which you need to rebuild Verifier image with the latest mrenclave value
+tips: Any changes to the code of VSSH_client will result in different mrenclave value, in which you need to rebuild Verifier image with the latest mrenclave value
 1. Move to "Verifier" directory (where you build verifier image)
     - run ```$ ./launch_verifier.sh ```
 2. Move to "VSSH_client" directory (where you build vssh client image )
@@ -176,9 +178,7 @@ tips: Every changes to the code of VSSH_client will result in different mrenclav
 ### Security Enhancements
 - [x] Remove insecure command-line arguments
 - [ ] Add Quete Verification and Remote Attestation
-  
-### Feature Additions
-- [ ] Add configuration for custom ssh command
+
   
 ### Architectural Improvements
 - [x] Create a configuration system for deployment flexibility
