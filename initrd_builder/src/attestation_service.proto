@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package attestation.v1;
+
+service AttestationService {
+
+  rpc Challenge (ChallengeRequest) returns (ChallengeReply);
+
+  rpc QuoteVerification (QuoteVerificationRequest) returns (QuoteVerificationReply);
+}
+
+message ChallengeRequest {
+  string name = 1;
+}
+
+message ChallengeReply {
+  string nonce = 1;
+}
+
+message QuoteVerificationRequest {
+  string quote = 1;
+}
+
+message QuoteVerificationReply {
+  string result = 1;
+}

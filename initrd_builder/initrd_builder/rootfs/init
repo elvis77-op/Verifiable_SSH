@@ -1,0 +1,127 @@
+#!/bin/busybox sh
+# 注意：这里直接写死为 /bin/busybox sh，这是最稳妥的写法
+
+echo "=== Early Boot Init Started ==="
+
+# 1. 确保 /bin/sh 链接存在 (双重保险)
+if [ ! -L /bin/sh ]; then
+    ln -s /bin/busybox /bin/sh
+fi
+
+# 2. 挂载基础文件系统
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+
+# 3. 创建设备节点
+if [ ! -e /dev/console ]; then
+    mknod -m 600 /dev/console c 5 1
+fi
+
+if ! mount -t devtmpfs dev /dev 2>/dev/null; then
+    mkdir -p /dev/pts
+    mknod /dev/null c 1 3
+fi
+echo "=== Activating loopback ==="
+ip link set lo up 2>/dev/null || ifconfig lo up 2>/dev/null
+sleep 1
+
+# 验证 lo 状态
+if ip addr show lo | grep -q "inet 127.0.0.1"; then
+    echo "✓ Loopback activated"
+else
+    echo "Adding 127.0.0.1 to lo..."
+    ifconfig lo 127.0.0.1 up 2>/dev/null || ip addr add 127.0.0.1/8 dev lo 2>/dev/null
+fi
+
+echo "=== Loading VSOCK Modules ==="
+
+KERNEL_VER=$(uname -r)
+MODULE_BASE="/lib/modules/${KERNEL_VER}"
+
+# 查找所有 VSOCK 模块
+VSOCK_MODULES=$(find "$MODULE_BASE" -name "*vsock*.ko" -type f 2>/dev/null | sort)
+
+if [ -z "$VSOCK_MODULES" ]; then
+    echo "✗ No VSOCK modules found!"
+    
+    # 尝试其他位置
+    find /lib/modules -name "*vsock*.ko" 2>/dev/null
+    
+    echo "Falling back to TCP mode..."
+    FALLBACK_TO_TCP=1
+else
+    echo "Found VSOCK modules:"
+    echo "$VSOCK_MODULES"
+    
+    # 按依赖顺序加载
+    # 1. 先加载核心 vsock 模块
+    echo "Loading vsock core..."
+    find "$MODULE_BASE" -name "vsock.ko" -o -name "vsock.ko.gz" | while read mod; do
+        echo "  insmod $mod"
+        insmod "$mod" 2>&1
+    done
+    
+    # 2. 加载 transport common
+    echo "Loading vsock transport common..."
+    find "$MODULE_BASE" -name "*vsock*virtio_transport_common*" | while read mod; do
+        echo "  insmod $mod"
+        insmod "$mod" 2>&1
+    done
+    
+    # 3. 加载 virtio transport
+    echo "Loading vsock virtio transport..."
+    find "$MODULE_BASE" \( -name "*vsock*virtio_transport.ko" -o -name "*virtio_vsock*" \) | while read mod; do
+        # 排除 common
+        if ! echo "$mod" | grep -q "common"; then
+            echo "  insmod $mod"
+            insmod "$mod" 2>&1
+        fi
+    done
+    
+    # 4. 加载其他 vsock 模块（hv_sock, vmci, loopback）
+    echo "Loading additional VSOCK modules..."
+    find "$MODULE_BASE" -name "*vsock*" | while read mod; do
+        if ! echo "$mod" | grep -qE "core|common|virtio_transport"; then
+            echo "  insmod $mod"
+            insmod "$mod" 2>&1
+        fi
+    done
+    
+    # 检查是否加载成功
+    sleep 1
+    echo ""
+    echo "Loaded VSOCK modules:"
+    cat /proc/modules | grep -i vsock || echo "  No modules loaded!"
+fi
+
+# 检查设备
+echo ""
+echo "Checking VSOCK device..."
+if [ -e /dev/vsock ] || [ -e /dev/vhost-vsock ]; then
+    echo "✓ VSOCK device found"
+else
+    # 尝试手动创建
+    VSOCK_MAJOR=$(grep -i vsock /proc/devices | awk '{print $1}')
+    if [ -n "$VSOCK_MAJOR" ]; then
+        echo "Creating /dev/vsock (major=$VSOCK_MAJOR)..."
+        mknod /dev/vsock c $VSOCK_MAJOR 0
+    fi
+fi
+
+# ... 之前的网络初始化代码 ...
+
+echo "=== Starting VSOCK Proxy with Socat ==="
+
+/bin/socat TCP-LISTEN:50051,reuseaddr,fork VSOCK-CONNECT:2:50051 &
+
+# 等待 socat ready
+sleep 1
+
+# ... 启动你的 attestation_client ...
+
+# 启动业务
+echo "Starting attestation_client..."
+/bin/attestation_client &
+
+# 保持 Shell
+exec /bin/sh

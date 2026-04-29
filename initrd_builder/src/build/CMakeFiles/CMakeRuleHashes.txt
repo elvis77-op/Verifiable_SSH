@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+596cd8f33210a509a2bb0544c78cfe8e attestation_service.pb.cc
