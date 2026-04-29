@@ -88,6 +88,21 @@ for cmd in sh mount mkdir mknod cat ls cp mv rm ln grep sed ash; do
 done
 cd ${ROOTFS_DIR}
 
+# ============================================
+# 解压所有 .ko.zst 模块为 .ko
+# ============================================
+echo "=== Decompressing .ko.zst modules ==="
+find "${ROOTFS_DIR}/lib/modules" -name "*.ko.zst" -type f | while read zst_file; do
+    echo "Decompressing: $zst_file"
+    unzstd "$zst_file" -o "${zst_file%.zst}" 2>/dev/null && rm -f "$zst_file"
+    # 如果 unzstd 不可用，尝试 zstd -d
+    # zstd -d "$zst_file" -o "${zst_file%.zst}" && rm -f "$zst_file"
+done
+
+echo "Remaining .ko.zst files: $(find ${ROOTFS_DIR} -name '*.ko.zst' | wc -l)"
+echo "Uncompressed .ko files: $(find ${ROOTFS_DIR} -name '*.ko' | wc -l)"
+
+
 # 3. 生成 CPIO 归档
 echo "=== Generating CPIO Archive ==="
 cd ${ROOTFS_DIR}
