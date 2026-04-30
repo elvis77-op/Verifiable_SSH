@@ -1,8 +1,0 @@
-/workspace/src/build/CMakeFiles/attestation_client.dir
-/workspace/src/build/CMakeFiles/attestation_server.dir
-/workspace/src/build/CMakeFiles/edit_cache.dir
-/workspace/src/build/CMakeFiles/rebuild_cache.dir
-/workspace/src/build/CMakeFiles/list_install_components.dir
-/workspace/src/build/CMakeFiles/install.dir
-/workspace/src/build/CMakeFiles/install/local.dir
-/workspace/src/build/CMakeFiles/install/strip.dir
