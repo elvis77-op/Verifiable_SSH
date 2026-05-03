@@ -1,0 +1,2 @@
+/workspace/rootfs/bin/attestation_client
+/workspace/rootfs/bin/attestation_server
